@@ -14,6 +14,7 @@ import { GAME_MODES } from './utils/constants';
 import { getStats, updateStats } from './utils/stats';
 
 import { Play, Trophy, Clock, Star, AlertCircle, ArrowLeft, Settings, BarChart2 } from 'lucide-react';
+import InteractiveParticleTypography from './components/InteractiveParticleTypography';
 
 export default function App() {
   console.log("App component rendering...");
@@ -273,11 +274,11 @@ export default function App() {
 
   const renderHome = () => (
     <div className="flex flex-col items-center justify-center min-h-[100dvh] w-full p-6 bg-gradient-to-br from-slate-900 to-slate-800 text-white overflow-y-auto">
-      <div className="mb-8 text-center animate-fade-in">
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight mb-2 text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-purple-400">
-          COWS & BULLS
-        </h1>
-        <p className="text-white/50 text-sm sm:text-base">The Ultimate Word Strategy Game</p>
+      <div className="mb-2 w-full flex flex-col items-center">
+        <div className="w-full max-w-3xl h-[200px] sm:h-[300px] relative -mt-10 sm:-mt-0">
+          <InteractiveParticleTypography text="COWS & BULLS" />
+        </div>
+        <p className="text-white/50 text-sm sm:text-base animate-fade-in -mt-4 sm:-mt-8 relative z-10">The Ultimate Word Strategy Game</p>
       </div>
 
       <div className="grid gap-4 w-full max-w-md">
