@@ -52,7 +52,8 @@ export default function StatsModal({ isOpen, onClose, stats, lastGameStats, onPl
                 <h3 className="text-sm font-bold text-white mb-3 uppercase tracking-widest">Guess Distribution</h3>
                 <div className="flex flex-col gap-2 mb-6">
                     {Object.entries(stats.guesses).map(([key, count]) => {
-                        if (key === 'fail' || count === 0 && key > 10) return null; // Skip empty high numbers
+                        // Fix string comparison bug: Number(key) > 10
+                        if (key === 'fail' || (count === 0 && Number(key) > 10)) return null; // Skip empty high numbers
                         const isCurrent = lastGameStats?.guessCount === Number(key) && lastGameStats?.isWin;
                         return (
                             <div key={key} className="flex items-center gap-2">
@@ -71,22 +72,25 @@ export default function StatsModal({ isOpen, onClose, stats, lastGameStats, onPl
                     })}
                 </div>
 
-                {lastGameStats && onPlayAgain && (
-                    <div className="flex gap-3 pt-2 border-t border-white/10 mt-6">
+                <div className="flex gap-3 pt-2 border-t border-white/10 mt-6">
+                    {onMenu && (
                         <button
                             onClick={onMenu}
                             className="flex-1 py-3 px-4 rounded-xl font-bold bg-white/10 hover:bg-white/20 text-white transition-all text-sm uppercase tracking-wide"
                         >
                             Main Menu
                         </button>
+                    )}
+
+                    {onPlayAgain && lastGameStats && (
                         <button
                             onClick={onPlayAgain}
                             className="flex-1 py-3 px-4 rounded-xl font-bold bg-primary-600 hover:bg-primary-500 text-white shadow-lg transition-all text-sm uppercase tracking-wide"
                         >
                             Play Again
                         </button>
-                    </div>
-                )}
+                    )}
+                </div>
             </motion.div>
         </div>
     );

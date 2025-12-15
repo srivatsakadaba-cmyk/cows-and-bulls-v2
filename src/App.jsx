@@ -199,12 +199,19 @@ export default function App() {
     // Update Used Letters logic
     // We update this regardless of difficulty state here, 
     // but the Keyboard component decides whether to SHOW it based on difficulty prop.
+    // Update Used Letters logic
     const secretUpper = secret.toUpperCase();
+
     setUsedLetters(prev => {
       const next = { ...prev };
-      currentGuess.split('').forEach(c => {
-        if (!secretUpper.includes(c)) next[c] = 'absent';
-      });
+
+      // Simplified Logic: For ALL modes, only gray out letters if the ENTIRE guess is a bust (0 Bulls, 0 Cows)
+      if (bulls === 0 && cows === 0) {
+        currentGuess.split('').forEach(c => {
+          next[c] = 'absent';
+        });
+      }
+
       return next;
     });
 
@@ -228,7 +235,8 @@ export default function App() {
     const handleKey = (e) => {
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const key = e.key.toUpperCase();
-      if (key === 'ENTER') {
+      // Allow 'ENTER' (uppercase from prev line), 'Enter' (raw), or keyCode 13 for physical return keys
+      if (key === 'ENTER' || e.key === 'Enter' || e.keyCode === 13) {
         e.preventDefault();
         handleEnter();
       }
