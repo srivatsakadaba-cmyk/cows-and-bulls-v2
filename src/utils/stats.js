@@ -11,7 +11,12 @@ const DEFAULT_STATS = {
 
 export const getStats = () => {
     const stored = localStorage.getItem(STATS_KEY);
-    return stored ? JSON.parse(stored) : DEFAULT_STATS;
+    try {
+        return stored ? JSON.parse(stored) : DEFAULT_STATS;
+    } catch (error) {
+        console.error('Failed to parse stats from local storage, resetting.', error);
+        return DEFAULT_STATS;
+    }
 };
 
 export const updateStats = (isWin, guessCount) => {

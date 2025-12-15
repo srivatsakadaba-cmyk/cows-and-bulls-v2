@@ -42,7 +42,13 @@ export const getDictionary = (mode = GAME_MODES.CLASSIC) => {
     else if (mode === GAME_MODES.MASTER) baseList = [...WORDS_5_ISO, ...WORDS_5_MASTER];
 
     const stored = localStorage.getItem(STORAGE_KEY);
-    const customWords = stored ? JSON.parse(stored) : [];
+    let customWords = [];
+    try {
+        customWords = stored ? JSON.parse(stored) : [];
+    } catch (error) {
+        console.error('Failed to parse custom dictionary, resetting.', error);
+        customWords = [];
+    }
 
     // Filter custom words based on mode 
     // (This is a simplified check. A robust app would enforce length/isogram on add)
@@ -60,7 +66,13 @@ export const addCustomWord = (word) => {
     // For now we just store it raw
 
     const stored = localStorage.getItem(STORAGE_KEY);
-    const customWords = stored ? JSON.parse(stored) : [];
+    let customWords = [];
+    try {
+        customWords = stored ? JSON.parse(stored) : [];
+    } catch (error) {
+        console.error('Failed to parse custom dictionary, resetting.', error);
+        customWords = [];
+    }
 
     if (customWords.includes(upperWord)) return false;
 
