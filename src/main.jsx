@@ -29,8 +29,15 @@ if ('serviceWorker' in navigator) {
       console.log('SW registration failed: ', registrationError);
     });
   });
+
+  // Reload page when new service worker takes control
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    console.log("New service worker took control, reloading...");
+    window.location.reload();
+  });
 }
 
+console.log("App v2 starting...");
 console.log("Main mounting...");
 
 ReactDOM.createRoot(document.getElementById('root')).render(
