@@ -13,6 +13,20 @@
   </head>
   <body class="bg-slate-900">
     <div id="root"></div>
+    <script>
+      window.onerror = function(message, source, lineno, colno, error) {
+        document.body.style.backgroundColor = '#0f172a';
+        document.body.style.color = '#ef4444';
+        document.getElementById('root').innerHTML = `
+          <div style="padding:20px;font-family:monospace;">
+            <h1>Startup Error</h1>
+            <p>${message}</p>
+            <p>Source: ${source}:${lineno}</p>
+            <pre>${error ? error.stack : ''}</pre>
+          </div>
+        `;
+      };
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
