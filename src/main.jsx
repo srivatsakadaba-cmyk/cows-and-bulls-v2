@@ -13,8 +13,10 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+console.log("Main mounting...");
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-)
+);

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import GuessRow from './GuessRow';
 
-export default function GameBoard({ guesses, currentGuess, isShake, gameStatus }) {
+export default function GameBoard({ guesses, currentGuess, isShake, gameStatus, wordLength = 4 }) {
     const bottomRef = useRef(null);
 
     useEffect(() => {
@@ -20,7 +20,7 @@ export default function GameBoard({ guesses, currentGuess, isShake, gameStatus }
                 )}
 
                 {guesses.map((g, i) => (
-                    <GuessRow key={i} guess={g} />
+                    <GuessRow key={i} guess={g} wordLength={wordLength} />
                 ))}
 
                 {gameStatus === 'playing' && (
@@ -28,6 +28,7 @@ export default function GameBoard({ guesses, currentGuess, isShake, gameStatus }
                         isCurrent={true}
                         currentGuess={currentGuess}
                         isShake={isShake}
+                        wordLength={wordLength}
                     />
                 )}
 

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { X, Share2, Clock } from 'lucide-react';
 
-export default function StatsModal({ isOpen, onClose, stats, lastGameStats }) {
+export default function StatsModal({ isOpen, onClose, stats, lastGameStats, onPlayAgain, onMenu }) {
     if (!isOpen || !stats) return null;
 
     const maxFrequency = Math.max(...Object.values(stats.guesses));
@@ -37,6 +37,9 @@ export default function StatsModal({ isOpen, onClose, stats, lastGameStats }) {
                                 {lastGameStats.isWin ? 'WON' : 'GAVE UP'}
                             </div>
 
+                            <div className="text-white/50">Score</div>
+                            <div className="font-bold text-amber-400">{lastGameStats.score ?? '-'} PTS</div>
+
                             <div className="text-white/50">Time</div>
                             <div className="font-mono text-white">{lastGameStats.timeFormatted}</div>
 
@@ -67,6 +70,23 @@ export default function StatsModal({ isOpen, onClose, stats, lastGameStats }) {
                         );
                     })}
                 </div>
+
+                {lastGameStats && onPlayAgain && (
+                    <div className="flex gap-3 pt-2 border-t border-white/10 mt-6">
+                        <button
+                            onClick={onMenu}
+                            className="flex-1 py-3 px-4 rounded-xl font-bold bg-white/10 hover:bg-white/20 text-white transition-all text-sm uppercase tracking-wide"
+                        >
+                            Main Menu
+                        </button>
+                        <button
+                            onClick={onPlayAgain}
+                            className="flex-1 py-3 px-4 rounded-xl font-bold bg-primary-600 hover:bg-primary-500 text-white shadow-lg transition-all text-sm uppercase tracking-wide"
+                        >
+                            Play Again
+                        </button>
+                    </div>
+                )}
             </motion.div>
         </div>
     );

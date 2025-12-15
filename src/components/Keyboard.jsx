@@ -6,7 +6,7 @@ const KEYBOARD_ROWS = [
     "ZXCVBNM"
 ];
 
-export default function Keyboard({ onChar, onDelete, onEnter, usedLetters, gameMode }) {
+export default function Keyboard({ onChar, onDelete, onEnter, usedLetters, gameMode, difficulty }) {
     return (
         <div className="w-full max-w-2xl mx-auto p-2 pb-safe-area-bottom">
             <div className="flex flex-col gap-2">
@@ -26,8 +26,8 @@ export default function Keyboard({ onChar, onDelete, onEnter, usedLetters, gameM
                             const status = usedLetters[char]; // 'absent' | undefined
                             let bgColor = 'bg-white/10 hover:bg-white/20 active:bg-white/25';
 
-                            // Only apply visual "gray out" if gameMode is EASY
-                            if (status === 'absent' && gameMode === 'easy') {
+                            // Only apply visual "gray out" if difficulty is EASY
+                            if (status === 'absent' && difficulty === 'easy') {
                                 bgColor = 'bg-slate-800/80 text-white/20 border border-white/5';
                             }
 
