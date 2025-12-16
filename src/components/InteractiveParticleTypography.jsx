@@ -99,6 +99,7 @@ const InteractiveParticleTypography = ({
         }
 
         let particlesArray = [];
+        let animationFrameId;
 
         const init = () => {
             particlesArray = [];
@@ -152,7 +153,7 @@ const InteractiveParticleTypography = ({
             for (let i = 0; i < particlesArray.length; i++) {
                 particlesArray[i].update();
             }
-            requestAnimationFrame(animate);
+            animationFrameId = requestAnimationFrame(animate);
         };
 
         init();
@@ -185,6 +186,7 @@ const InteractiveParticleTypography = ({
         canvas.addEventListener('touchend', handleLeave);
 
         return () => {
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
             canvas.removeEventListener('mousemove', handleMouseMove);
             canvas.removeEventListener('touchmove', handleTouchMove);
             canvas.removeEventListener('mouseleave', handleLeave);

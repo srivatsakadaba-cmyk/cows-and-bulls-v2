@@ -1,38 +1,38 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, memo } from 'react';
 import * as THREE from 'three';
 
-const AnimatedShaderBackground = () => {
-    const containerRef = useRef(null);
+const AnimatedShaderBackground = memo(() => {
+  const containerRef = useRef(null);
 
-    useEffect(() => {
-        const container = containerRef.current;
-        if (!container) return;
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-        // SCENE SETUP
-        const scene = new THREE.Scene();
-        const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    // SCENE SETUP
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-        // RENDERER
-        const renderer = new THREE.WebGLRenderer({
-            antialias: true,
-            alpha: true
-        });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // optimize for mobile
-        container.appendChild(renderer.domElement);
+    // RENDERER
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // optimize for mobile, max 1.5
+    container.appendChild(renderer.domElement);
 
-        // MATERIAL
-        const material = new THREE.ShaderMaterial({
-            uniforms: {
-                iTime: { value: 0 },
-                iResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
-            },
-            vertexShader: `
+    // MATERIAL
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        iTime: { value: 0 },
+        iResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+      },
+      vertexShader: `
         void main() {
           gl_Position = vec4(position, 1.0);
         }
       `,
-            fragmentShader: `
+      fragmentShader: `
         uniform float iTime;
         uniform vec2 iResolution;
 
@@ -74,9 +74,9 @@ const AnimatedShaderBackground = () => {
 
           float f = 2.0 + fbm(p + vec2(iTime * 5.0, 0.0)) * 0.5;
 
-          for (float i = 0.0; i < 35.0; i++) {
+          for (float i = 0.0; i < 12.0; i++) {
             v = p + cos(i * i + (iTime + p.x * 0.08) * 0.025 + i * vec2(13.0, 11.0)) * 3.5 + vec2(sin(iTime * 3.0 + i) * 0.003, cos(iTime * 3.5 - i) * 0.003);
-            float tailNoise = fbm(v + vec2(iTime * 0.5, i)) * 0.3 * (1.0 - (i / 35.0));
+            float tailNoise = fbm(v + vec2(iTime * 0.5, i)) * 0.3 * (1.0 - (i / 12.0));
             
             // Adjust colors for "Cows and Bulls" vibe? Or keep original aurora
             // Original matches the dark futuristic theme well
@@ -87,7 +87,7 @@ const AnimatedShaderBackground = () => {
               1.0
             );
             vec4 currentContribution = auroraColors * exp(sin(i * i + iTime * 0.8)) / length(max(v, vec2(v.x * f * 0.015, v.y * 1.5)));
-            float thinnessFactor = smoothstep(0.0, 1.0, i / 35.0) * 0.6;
+            float thinnessFactor = smoothstep(0.0, 1.0, i / 12.0) * 0.6;
             o += currentContribution * (1.0 + tailNoise * 0.8) * thinnessFactor;
           }
 
@@ -95,46 +95,46 @@ const AnimatedShaderBackground = () => {
           gl_FragColor = o * 1.5;
         }
       `
-        });
+    });
 
-        const geometry = new THREE.PlaneGeometry(2, 2);
-        const mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
+    const geometry = new THREE.PlaneGeometry(2, 2);
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
 
-        let frameId;
-        const animate = () => {
-            material.uniforms.iTime.value += 0.016;
-            renderer.render(scene, camera);
-            frameId = requestAnimationFrame(animate);
-        };
-        animate();
+    let frameId;
+    const animate = () => {
+      material.uniforms.iTime.value += 0.016;
+      renderer.render(scene, camera);
+      frameId = requestAnimationFrame(animate);
+    };
+    animate();
 
-        const handleResize = () => {
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            if (material.uniforms.iResolution) {
-                material.uniforms.iResolution.value.set(window.innerWidth, window.innerHeight);
-            }
-        };
-        window.addEventListener('resize', handleResize);
+    const handleResize = () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      if (material.uniforms.iResolution) {
+        material.uniforms.iResolution.value.set(window.innerWidth, window.innerHeight);
+      }
+    };
+    window.addEventListener('resize', handleResize);
 
-        return () => {
-            cancelAnimationFrame(frameId);
-            window.removeEventListener('resize', handleResize);
-            if (container && renderer.domElement && container.contains(renderer.domElement)) {
-                container.removeChild(renderer.domElement);
-            }
-            geometry.dispose();
-            material.dispose();
-            renderer.dispose();
-        };
-    }, []);
+    return () => {
+      cancelAnimationFrame(frameId);
+      window.removeEventListener('resize', handleResize);
+      if (container && renderer.domElement && container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
+      geometry.dispose();
+      material.dispose();
+      renderer.dispose();
+    };
+  }, []);
 
-    return (
-        <div
-            ref={containerRef}
-            className="fixed inset-0 w-full h-full pointer-events-none -z-10 bg-black"
-        />
-    );
-};
+  return (
+    <div
+      ref={containerRef}
+      className="fixed inset-0 w-full h-full pointer-events-none -z-10 bg-black"
+    />
+  );
+});
 
 export default AnimatedShaderBackground;

@@ -10,10 +10,10 @@ export default function GameBoard({ guesses, currentGuess, isShake, gameStatus, 
 
     return (
         <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 w-full max-w-lg mx-auto py-2">
-            <div className="flex flex-col min-h-full justify-start pb-4">
+            <div className="flex flex-col min-h-full justify-center pb-4">
                 {/* Helper text for empty state */}
-                {guesses.length === 0 && gameStatus === 'playing' && currentGuess.length === 0 && (
-                    <div className="flex flex-col items-center justify-center flex-1 opacity-20 text-center pointer-events-none mt-10">
+                {guesses.length === 0 && gameStatus === 'playing' && (
+                    <div className="flex flex-col items-center justify-center opacity-20 text-center pointer-events-none mb-8">
                         <p className="text-4xl mb-2">🐮 🐮</p>
                         <p className="text-sm font-medium uppercase tracking-widest">Start Guessing</p>
                     </div>
