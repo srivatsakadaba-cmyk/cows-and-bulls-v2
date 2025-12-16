@@ -46,6 +46,14 @@ export default function StatsModal({ isOpen, onClose, stats, lastGameStats, onPl
                             <div className="text-white/50">Avg Time/Guess</div>
                             <div className="font-mono text-white">{lastGameStats.timePerGuess}s</div>
                         </div>
+
+                        {/* Reveal Word on Loss */}
+                        {!lastGameStats.isWin && lastGameStats.secretWord && (
+                            <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex flex-col items-center">
+                                <span className="text-xs text-red-300 font-bold uppercase mb-1">The Word Was</span>
+                                <span className="text-2xl font-black text-white tracking-widest">{lastGameStats.secretWord}</span>
+                            </div>
+                        )}
                     </div>
                 )}
 

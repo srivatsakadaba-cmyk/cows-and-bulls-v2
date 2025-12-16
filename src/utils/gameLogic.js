@@ -47,13 +47,30 @@ export const isValidInput = (word, mode = GAME_MODES.CLASSIC, skipDictionary = f
     // 2. CONSTRAINT CHECK
     // Master mode allows repeats, others must be isograms
     if (mode === GAME_MODES.MASTER) {
-        // Validation: arbitrary constraint of max 2 of same letter for sanity?
-        // User requested: "max 2 occurrences per letter"
+        // Validation: 
+        // 1. Max 2 occurrences per letter
+        // 2. Only ONE letter can be repeated (appear > 1 time)
+
         const counts = {};
+        let repeatingCharCount = 0; // Usage of "repeating letter"
+
         for (const char of upperWord) {
             counts[char] = (counts[char] || 0) + 1;
-            if (counts[char] > 2) return false; // Fail if > 2 of same char
         }
+
+        for (const char in counts) {
+            if (counts[char] > 2) return false; // Rule 1: Max 2 of same letter
+            if (counts[char] > 1) {
+                repeatingCharCount++;
+            }
+        }
+
+        if (repeatingCharCount > 1) return false; // Rule 2: Only 1 letter typically repeats
+        // Wait, did the user want EXACTLY 1 repeat? Or "Only 1 letter can appear more than once"?
+        // "Only 1 letter can appear more than once" implies <= 1 repeating letter. 
+        // So Isograms are technically valid too (0 letters repeating). 
+        // I will assume Isograms are valid unless we specifically want to force repeats.
+
         return true;
     } else {
         // Isogram check

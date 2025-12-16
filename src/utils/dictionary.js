@@ -51,13 +51,53 @@ export const getDictionary = (mode = GAME_MODES.CLASSIC) => {
     }
 
     // Filter custom words based on mode 
-    // (This is a simplified check. A robust app would enforce length/isogram on add)
     const validCustom = customWords.filter(w => {
         const len = (mode === GAME_MODES.CLASSIC) ? 4 : 5;
-        return w.length === len;
+        if (w.length !== len) return false;
+
+        const u = w.toUpperCase();
+
+        // CRITICAL FIX: Ensure isograms for Classic/Challenge
+        if (mode === GAME_MODES.CLASSIC || mode === GAME_MODES.CHALLENGE) {
+            const unique = new Set(u.split(''));
+            if (unique.size !== len) return false;
+        }
+
+        // Strict Master Mode Check
+        if (mode === GAME_MODES.MASTER) {
+            const counts = {};
+            let repeating = 0;
+            for (const c of u) {
+                counts[c] = (counts[c] || 0) + 1;
+            }
+            for (const c in counts) {
+                if (counts[c] > 2) return false;
+                if (counts[c] > 1) repeating++;
+            }
+            if (repeating > 1) return false;
+        }
+
+        return true;
     });
 
-    return [...new Set([...baseList, ...validCustom])];
+    // Also filter baseList for Master mode if necessary (just in case my static list has bad words)
+    let finalBase = baseList;
+    if (mode === GAME_MODES.MASTER) {
+        finalBase = baseList.filter(w => {
+            const counts = {};
+            let repeating = 0;
+            for (const c of w) {
+                counts[c] = (counts[c] || 0) + 1;
+            }
+            for (const c in counts) {
+                if (counts[c] > 2) return false;
+                if (counts[c] > 1) repeating++;
+            }
+            return repeating <= 1;
+        });
+    }
+
+    return [...new Set([...finalBase, ...validCustom])];
 };
 
 export const addCustomWord = (word) => {

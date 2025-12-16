@@ -9,7 +9,7 @@ export default function GameBoard({ guesses, currentGuess, isShake, gameStatus, 
     }, [guesses, currentGuess]);
 
     return (
-        <div className="flex-1 overflow-y-auto no-scrollbar px-4 w-full max-w-lg mx-auto py-2">
+        <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar px-4 w-full max-w-lg mx-auto py-2">
             <div className="flex flex-col min-h-full justify-start pb-4">
                 {/* Helper text for empty state */}
                 {guesses.length === 0 && gameStatus === 'playing' && currentGuess.length === 0 && (

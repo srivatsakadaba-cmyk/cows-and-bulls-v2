@@ -9,18 +9,22 @@ const DEFAULT_STATS = {
     winPercentage: 0,
 };
 
-export const getStats = () => {
-    const stored = localStorage.getItem(STATS_KEY);
+// Helper to get key for mode
+const getStatsKey = (mode) => `${STATS_KEY}-${mode}`;
+
+export const getStats = (mode = 'classic') => {
+    const key = getStatsKey(mode);
+    const stored = localStorage.getItem(key);
     try {
-        return stored ? JSON.parse(stored) : DEFAULT_STATS;
+        return stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(DEFAULT_STATS));
     } catch (error) {
         console.error('Failed to parse stats from local storage, resetting.', error);
-        return DEFAULT_STATS;
+        return JSON.parse(JSON.stringify(DEFAULT_STATS));
     }
 };
 
-export const updateStats = (isWin, guessCount) => {
-    const stats = getStats();
+export const updateStats = (isWin, guessCount, mode = 'classic') => {
+    const stats = getStats(mode);
 
     stats.gamesPlayed += 1;
 
@@ -29,8 +33,6 @@ export const updateStats = (isWin, guessCount) => {
         stats.currentStreak += 1;
         stats.maxStreak = Math.max(stats.currentStreak, stats.maxStreak);
 
-        // Cap guess count for distribution key if it exceeds common expectations? 
-        // We'll just store exact or 'fail' if lost (though this function is called with guessCount)
         const key = guessCount > 20 ? '20+' : guessCount;
         stats.guesses[key] = (stats.guesses[key] || 0) + 1;
     } else {
@@ -40,6 +42,7 @@ export const updateStats = (isWin, guessCount) => {
 
     stats.winPercentage = Math.round((stats.gamesWon / stats.gamesPlayed) * 100);
 
-    localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+    const key = getStatsKey(mode);
+    localStorage.setItem(key, JSON.stringify(stats));
     return stats;
 };

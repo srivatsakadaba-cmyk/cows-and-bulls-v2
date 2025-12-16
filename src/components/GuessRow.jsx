@@ -56,7 +56,7 @@ export default function GuessRow({ guess, isCurrent, currentGuess, isShake, word
                 </div>
 
                 {/* Score indicators (Static Layout - No Absolute) */}
-                <div className="flex flex-col justify-center gap-2 min-w-[70px] sm:min-w-[90px] font-bold">
+                <div className="flex flex-row md:flex-col items-center justify-center gap-2 min-w-[70px] sm:min-w-[90px] font-bold">
                     {!isCurrent && guess && (
                         <>
                             {/* Bull Badge */}
